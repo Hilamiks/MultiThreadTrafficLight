@@ -42,7 +42,7 @@ public class QueueThread extends Thread{
 			}
 
 			try {
-				sleep(1000);
+				sleep(900);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
@@ -73,6 +73,14 @@ public class QueueThread extends Thread{
 	void dequeue() {
 		if (!roadQueue.isEmpty()) {
 			System.out.println(roadQueue.remove(0).name + "  deleted!");
+			if (roadQueue.size() == 1) {
+				roadQueue.get(0).isOpen = true;
+			}
+			for (Road road : roadQueue) {
+				if (road.isOpen) {
+					indexOfOpenRoad = roadQueue.indexOf(road);
+				}
+			}
 			end--;
 		} else {
 			System.out.println("queue is empty");
@@ -86,7 +94,7 @@ public class QueueThread extends Thread{
 			if (road.isOpen) {
 				status = "\u001B[32m open for " + (interval - secondsFromStart % interval) + "s.\u001B[0m";
 			} else {
-				int countdown = 0;
+				int countdown;
 				if(roadQueue.indexOf(road) > indexOfOpenRoad) {
 					countdown = (interval - secondsFromStart%interval) +
 							(interval * (roadQueue.indexOf(road) - indexOfOpenRoad - 1));
